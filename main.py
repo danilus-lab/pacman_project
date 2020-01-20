@@ -251,3 +251,85 @@ class Pacman(pygame.sprite.Sprite):
 
         self.lives = 3
         self.i = 0
+
+    def move(self, event):
+        if MODE == 'arrows':
+            if event.key == pygame.K_UP:
+                self.image = convert_image(load_image('pacman_up.png'), 30, 30)
+                self.moveUp = True
+                self.moveLeft = self.moveDown = self.moveRight = False
+            elif event.key == pygame.K_DOWN:
+                self.image = convert_image(load_image('pacman_down.png'), 30, 30)
+                self.moveDown = True
+                self.moveUp = self.moveLeft = self.moveRight = False
+            elif event.key == pygame.K_RIGHT:
+                self.image = convert_image(self.right[self.i % 3], 30, 30)
+                self.moveRight = True
+                self.moveUp = self.moveLeft = self.moveDown = False
+            elif event.key == pygame.K_LEFT:
+                self.image = convert_image(load_image('pacman_left.png', -1), 30, 30)
+                self.moveLeft = True
+                self.moveUp = self.moveDown = self.moveRight = False
+        else:
+            if event.key == pygame.K_w:
+                self.image = convert_image(load_image('pacman_up.png'), 30, 30)
+                self.moveUp = True
+                self.moveLeft = self.moveDown = self.moveRight = False
+            elif event.key == pygame.K_s:
+                self.image = convert_image(load_image('pacman_down.png'), 30, 30)
+                self.moveDown = True
+                self.moveUp = self.moveLeft = self.moveRight = False
+            elif event.key == pygame.K_d:
+                self.image = convert_image(load_image('pacman_right.png'), 30, 30)
+                self.moveRight = True
+                self.moveUp = self.moveLeft = self.moveDown = False
+            elif event.key == pygame.K_a:
+                self.image = convert_image(load_image('pacman_left.png', -1), 30, 30)
+                self.moveLeft = True
+                self.moveUp = self.moveDown = self.moveRight = False
+
+    def return_to_the_start(self):
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def check(self):
+        if pygame.sprite.spritecollideany(self, bots):
+            self.lives -= 1
+            self.score -= 300
+            self.score_for_level -= 300
+            self.k_ghosts += 1
+            if GAMEPLAY_SOUNDS:
+                sounds['ghost'].set_volume(0.05)
+                sounds['ghost'].play()
+            self.return_to_the_start()
+
+    def update(self):
+        self.i += 1
+        if self.moveRight:
+            if self.i % 10 == 0:
+                self.image = convert_image(self.right[self.i % 3], 30, 30)
+            self.rect = self.rect.move(1, 0)
+            if pygame.sprite.spritecollideany(self, vertical_borders):
+                self.rect = self.rect.move(-1, 0)
+        elif self.moveLeft:
+            self.rect = self.rect.move(-1, 0)
+            if self.i % 10 == 0:
+                self.image = convert_image(self.left[self.i % 3], 30, 30)
+            if pygame.sprite.spritecollideany(self, vertical_borders):
+                self.rect = self.rect.move(1, 0)
+        elif self.moveDown:
+            self.rect = self.rect.move(0, 1)
+            if self.i % 10 == 0:
+                self.image = convert_image(self.down[self.i % 3], 30, 30)
+            if pygame.sprite.spritecollideany(self, horizontal_borders):
+                self.rect = self.rect.move(0, -1)
+        elif self.moveUp:
+            self.rect = self.rect.move(0, -1)
+            if self.i % 10 == 0:
+                self.image = convert_image(self.up[self.i % 3], 30, 30)
+            if pygame.sprite.spritecollideany(self, horizontal_borders):
+                self.rect = self.rect.move(0, 1)
+
+    def if_max_score(self):
+        return self.score_for_level == 20 * self.k_food + \
+               100 * self.k_cherries - 300 * self.k_ghosts
