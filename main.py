@@ -814,3 +814,94 @@ def nast_of_volume():
         x, y = pygame.mouse.get_pos()
         cursor.move(x, y)
         pygame.display.flip()
+
+
+def load_level(fullname):
+    filename = "levels/" + fullname
+    with open(filename, 'r') as mapFile:
+        level_map = [line.strip() for line in mapFile]
+    max_width = max(map(len, level_map))
+    return list(map(lambda x: x.ljust(max_width, '.'), level_map))
+
+
+def draw_border(x, y):
+    Border(30 * x + 5, 30 * y + 5, 30 * (x + 1) - 5, 30 * y + 5)
+    Border(30 * x + 5, 30 * (y + 1) - 5, 30 * (x + 1) - 5, 30 * (y + 1) - 5)
+    Border(30 * x + 5, 30 * y + 5, 30 * x + 5, 30 * (y + 1) - 5)
+    Border(30 * (x + 1) - 5, 30 * y + 5, 30 * (x + 1) - 5, 30 * (y + 1) - 5)
+
+
+def find_border_cords(level):
+    for y in range(len(level)):
+        for x in range(len(level)):
+            if level[y][x] == '0':
+                draw_border(x, y)
+            elif level[y][x] == '1':
+                draw_border(x, y)
+            elif level[y][x] == '2':
+                draw_border(x, y)
+            elif level[y][x] == '3':
+                draw_border(x, y)
+            elif level[y][x] == '4':
+                draw_border(x, y)
+            elif level[y][x] == '5':
+                draw_border(x, y)
+            elif level[y][x] == '6':
+                draw_border(x, y)
+            elif level[y][x] == '7':
+                draw_border(x, y)
+            elif level[y][x] == '8':
+                draw_border(x, y)
+            elif level[y][x] == '9':
+                draw_border(x, y)
+
+
+def generator_level(level):
+    global number
+    print(number)
+    ghosts = []
+    new_player, x, y = None, None, None
+    for y in range(len(level)):
+        for x in range(len(level)):
+            if level[y][x] == '0':
+                Tile('0', x, y)
+            elif level[y][x] == '1':
+                Tile('1', x, y)
+            elif level[y][x] == '@':
+                new_player = Pacman(x * 30, y * 30, SCORE, number)
+            elif level[y][x] == '2':
+                Tile('2', x, y)
+            elif level[y][x] == '3':
+                Tile('3', x, y)
+            elif level[y][x] == '4':
+                Tile('4', x, y)
+            elif level[y][x] == '5':
+                Tile('5', x, y)
+            elif level[y][x] == '6':
+                Tile('6', x, y)
+            elif level[y][x] == '7':
+                Tile('7', x, y)
+            elif level[y][x] == '8':
+                Tile('8', x, y)
+            elif level[y][x] == '9':
+                Tile('9', x, y)
+            elif level[y][x] == '*':
+                Food(x, y)
+            elif level[y][x] == '.':
+                Tile('empty', x, y)
+            elif level[y][x] == 'a':
+                Food(x, y)
+                ghost = Bots_a(x * 30, y * 30, 'a', number)
+                ghosts.append(ghost)
+            elif level[y][x] == 'b':
+                Food(x, y)
+                ghost = Bots_b(x * 30, y * 30, 'b', number)
+                ghosts.append(ghost)
+            elif level[y][x] == 'c':
+                Food(x, y)
+                ghost = Bots_c(x * 30, y * 30, 'c', number)
+                ghosts.append(ghost)
+            elif level[y][x] == 'v':
+                Tile('empty', x, y)
+                Cherry(x, y)
+    return new_player, x, y, ghosts
