@@ -1069,3 +1069,11 @@ def main():
     pause_button = PauseButton(750, 520)
     clock = pygame.time.Clock()
     running = True
+    pacman, level_x, level_y, ghosts = \
+        generator_level(load_level('level' + str(number) + '.txt'))
+    find_border_cords(load_level('level' + str(number) + '.txt'))
+    screen.fill((0, 0, 0))
+    tile_group.update()
+    tile_group.draw(screen)
+    food.update(pacman)
+    food.draw(screen)
