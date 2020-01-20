@@ -333,3 +333,112 @@ class Pacman(pygame.sprite.Sprite):
     def if_max_score(self):
         return self.score_for_level == 20 * self.k_food + \
                100 * self.k_cherries - 300 * self.k_ghosts
+
+        def otrisovka(self):
+            font = pygame.font.SysFont("comicsansms", 30)
+            screen.fill((0, 0, 0))
+            score = font.render('SCORE: ' + str(self.score), 1,
+                                (255, 165, 0))
+            screen.blit(score, (600, 10))
+            font = pygame.font.SysFont("comicsansms", 60)
+            lives = font.render('x ' + str(self.lives), 1,
+                                (255, 165, 0))
+            screen.blit(lives, (750, 260))
+
+        def end_of_game(self):
+            if self.lives == 0:
+                return True
+
+    class Bots_a(pygame.sprite.Sprite):
+        def __init__(self, x, y, bucva, number):
+            super().__init__(bots, all_sprites)
+            self.image = convert_image(load_image(bucva + '.png'), 30, 30)
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            self.spid_x = 1
+            self.spid_y = 1
+            self.number = number
+            self.radius = 10
+            self.r_l = True
+            self.u_d = True
+            self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
+
+        def update(self):
+            level = load_level('level' + str(self.number) + '.txt')
+            if self.r_l:
+                self.rect.x += self.spid_x
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
+                self.rect.y += self.spid_y
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
+
+    class Bots_b(pygame.sprite.Sprite):
+        def __init__(self, x, y, bucva, number):
+            super().__init__(bots, all_sprites)
+            self.image = convert_image(load_image(bucva + '.png'), 30, 30)
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            self.spid_x = 1
+            self.spid_y = 1
+            self.number = number
+            self.r_l = True
+            self.u_d = True
+            self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
+
+        def update(self):
+            level = load_level('level' + str(self.number) + '.txt')
+            if self.r_l:
+                self.rect.x += self.spid_x
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
+                self.rect.y += self.spid_y
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
+
+    class Bots_c(pygame.sprite.Sprite):
+        def __init__(self, x, y, bucva, number):
+            super().__init__(bots, all_sprites)
+            self.image = convert_image(load_image(bucva + '.png'), 30, 30)
+            self.rect = self.image.get_rect()
+            self.rect.x = x
+            self.rect.y = y
+            self.spid_x = 1
+            self.spid_y = 1
+            self.number = number
+            self.r_l = True
+            self.u_d = True
+            self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
+
+        def update(self):
+            level = load_level('level' + str(self.number) + '.txt')
+            if self.r_l:
+                self.rect.x += self.spid_x
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
+                self.rect.y += self.spid_y
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
