@@ -152,3 +152,38 @@ class PauseButton(pygame.sprite.Sprite):
     def place(self):
         pause_sprites.update()
         pause_sprites.draw(screen)
+
+
+class Cherry(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(cherries)
+        self.image = tile_images['v']
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(tile_width * pos_x, tile_height * pos_y)
+        self.x = pos_x
+        self.y = pos_y
+        self.radius = 5
+
+    def update(self, pacman):
+        if pygame.sprite.collide_circle(self, pacman):
+            self.kill()
+            pacman.score += 100
+            pacman.score_for_level += 100
+            new_sprite = pygame.sprite.Sprite(cherries)
+            new_sprite.image = tile_images['empty']
+            new_sprite.rect = new_sprite.image.get_rect()
+            new_sprite.rect = new_sprite.rect.move(tile_width * self.x, tile_height * self.y)
+            if GAMEPLAY_SOUNDS:
+                sounds['cherry'].set_volume(0.02)
+                sounds['cherry'].play(0)
+
+
+class Border(pygame.sprite.Sprite):
+    def __init__(self, x1, y1, x2, y2):
+        super().__init__(all_sprites)
+        if x1 == x2:
+            self.add(vertical_borders)
+            self.rect = pygame.Rect(x1, y1, 1, y2 - y1)
+        else:
+            self.add(horizontal_borders)
+            self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
