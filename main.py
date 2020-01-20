@@ -187,3 +187,58 @@ class Border(pygame.sprite.Sprite):
         else:
             self.add(horizontal_borders)
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
+
+
+class Pacman(pygame.sprite.Sprite):
+    def __init__(self, x, y, score, number_level):
+        super().__init__(player_group, all_sprites)
+        self.image = convert_image(load_image('pacman_right.png'), 30, 30)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.radius = 2
+        self.k_food = 0
+        self.k_cherries = 0
+        self.k_ghosts = 0
+        self.score_for_level = 0
+        self.number_level = number_level
+        if self.number_level == 1:
+            self.k_food = 143
+            self.k_cherries = 7
+        elif self.number_level == 2:
+            self.k_food = 142
+            self.k_cherries = 8
+        elif self.number_level == 3:
+            self.k_food = 198
+            self.k_cherries = 6
+        elif self.number_level == 4:
+            self.k_food = 198
+            self.k_cherries = 6
+        elif self.number_level == 5:
+            self.k_food = 219
+            self.k_cherries = 6
+        elif self.number_level == 6:
+            self.k_food = 219
+            self.k_cherries = 6
+        elif self.number_level == 7:
+            self.k_food = 218
+            self.k_cherries = 9
+        elif self.number_level == 8:
+            self.k_food = 219
+            self.k_cherries = 8
+        self.x = x
+        self.y = y
+        self.score = score
+        self.moveUp = self.moveLeft = self.moveDown = self.moveRight = False
+
+        self.right = [load_image('pacman_right.png'), load_image('pacman_right_a.png'),
+                      load_image('pacman_right_b.png')]
+
+        self.left = [load_image('pacman_left.png'), load_image('pacman_left_a.png'),
+                     load_image('pacman_left_b.png')]
+
+        self.up = [load_image('pacman_up.png'), load_image('pacman_up_a.png'),
+                   load_image('pacman_up_b.png')]
+
+        self.down = [load_image('pacman_down.png'), load_image('pacman_down_a.png'),
+                     load_image('pacman_down_b.png')]
