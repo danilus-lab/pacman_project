@@ -868,6 +868,7 @@ def generator_level(level):
             elif level[y][x] == '1':
                 Tile('1', x, y)
             elif level[y][x] == '@':
+                Tile('empty', x, y)
                 new_player = Pacman(x * 30, y * 30, SCORE, number)
             elif level[y][x] == '2':
                 Tile('2', x, y)
