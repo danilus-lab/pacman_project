@@ -445,3 +445,372 @@ class Bots_c(pygame.sprite.Sprite):
                 self.rect.y += self.spid_y
                 self.u_d = False
                 self.r_l = True
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def click_sound():
+    if CLICK_SOUNDS:
+        sounds['click'].set_volume(0.02)
+        sounds['click'].play()
+
+
+cursor = Cursor()
+
+
+def start_screen():
+    global number
+    pygame.display.set_caption('PACMAN INFOMAT EDITION')
+    size = width, height = 600, 600
+    screen = pygame.display.set_mode(size)
+    if MUSIC_SOUNDS:
+        pygame.mixer.music.load('music/start_screen_music.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.05)
+    x, y = pygame.mouse.get_pos()
+    running = True
+    all_sprites = pygame.sprite.Group()
+    arrow = pygame.sprite.Sprite(all_sprites)
+    arrow.image = load_image('arrow.png', -1)
+    arrow.rect = arrow.image.get_rect()
+    arrow.rect.x = 20
+    arrow.rect.y = 30
+
+    nadpis = pygame.sprite.Sprite(all_sprites)
+    nadpis.image = load_image('nadpis.png', -1)
+    nadpis.rect = nadpis.image.get_rect()
+    nadpis.rect.x = 125
+    nadpis.rect.y = 2
+    pacman_start_screen = pygame.sprite.Sprite(all_sprites)
+    pacman_start_screen.image = convert_image(load_image('main_menu_pic.jpg', -1), 600, 160)
+    pacman_start_screen.rect = pacman_start_screen.image.get_rect()
+    pacman_start_screen.rect.x = 10
+    pacman_start_screen.rect.y = 400
+    while running:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("comicsansms", 50)
+        menu = font.render("PLAY", 1, (255, 165, 0))
+        text_x = width // 2 - menu.get_width() // 2
+        text_y = height // 2 - menu.get_height() // 2 - 250
+        screen.blit(menu, (text_x, text_y + 100))
+        settings = font.render("SETTINGS", 1, (255, 165, 0))
+        screen.blit(settings, (text_x, text_y + 200))
+        exit = font.render("EXIT", 1, (255, 165, 0))
+        screen.blit(exit, (text_x, text_y + 300))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    if arrow.rect.y < 150:
+                        arrow.rect.y += 100
+                elif event.key == pygame.K_UP:
+                    if arrow.rect.y > 105:
+                        arrow.rect.y -= 100
+                elif event.key == pygame.K_RETURN:
+                    if arrow.rect.y == 30:
+                        pygame.mixer.music.stop()
+                        main()
+                        break
+                    elif arrow.rect.y == 130:
+                        pygame.mixer.music.stop()
+                        nast()
+                    elif arrow.rect.y == 230:
+                        pygame.mixer.music.stop()
+                        terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound()
+                if 216 < event.pos[0] < 354 and 130 < event.pos[1] < 177:
+                    pygame.mixer.music.stop()
+                    main()
+                    break
+                elif 238 < event.pos[0] < 517 and 228 < event.pos[1] < 284:
+                    pygame.mixer.music.stop()
+                    nast()
+                    break
+                elif 238 < event.pos[0] < 378 and 327 < event.pos[1] < 378:
+                    pygame.mixer.music.stop()
+                    terminate()
+            elif event.type == pygame.MOUSEMOTION:
+                if 226 < event.pos[0] < 354 and 130 < event.pos[1] < 177:
+                    arrow.rect.y = 30
+                elif 238 < event.pos[0] < 517 and 228 < event.pos[1] < 284:
+                    arrow.rect.y = 130
+                elif 238 < event.pos[0] < 378 and 327 < event.pos[1] < 378:
+                    arrow.rect.y = 230
+        all_sprites.update()
+        all_sprites.draw(screen)
+        x, y = pygame.mouse.get_pos()
+        cursor.move(x, y)
+        pygame.display.flip()
+
+
+def nast():
+    pygame.display.set_caption('SETTINGS')
+    running = True
+    settings_sprites = pygame.sprite.Group()
+    picture = pygame.sprite.Sprite(settings_sprites)
+    picture.image = load_image('settings_screen.jpg', -1)
+    picture.rect = picture.image.get_rect()
+    picture.rect.x = 0
+    picture.rect.y = 350
+    back = BackButton(20, 30)
+    all_sprites = pygame.sprite.Group()
+    underline = pygame.sprite.Sprite(all_sprites)
+    underline.image = convert_image(load_image('underline.png'), 500, 60)
+    underline.rect = underline.image.get_rect()
+    underline.rect.x = 10
+    underline.rect.y = 160
+    while running:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("comicsansms", 50)
+        settings = font.render("SETTINGS", 1, (255, 165, 0))
+        text_x = width // 2 - settings.get_width() // 2
+        text_y = height // 2 - settings.get_height() // 2 - 250
+        screen.blit(settings, (text_x, text_y))
+        font_small = pygame.font.SysFont("comicsansms", 60)
+        controlling_text = font_small.render("CONTROLLING", 1, (255, 255, 0))
+        controlling_text_x = 20
+        controlling_text_y = 100
+        screen.blit(controlling_text, (controlling_text_x, controlling_text_y))
+        volume_text = font_small.render("VOLUME", 1, (255, 255, 0))
+        volume_text_x = 20
+        volume_text_y = 250
+        screen.blit(volume_text, (volume_text_x, volume_text_y))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    back.kill()
+                    start_screen()
+                elif event.key == pygame.K_DOWN:
+                    if underline.rect.y < 250:
+                        underline.rect.y += 150
+                elif event.key == pygame.K_UP:
+                    if underline.rect.y > 250:
+                        underline.rect.y -= 150
+                elif event.key == pygame.K_RETURN:
+                    if underline.rect.y == 160:
+                        back.kill()
+                        nast_of_controlling()
+                    else:
+                        back.kill()
+                        nast_of_volume()
+            elif event.type == pygame.MOUSEMOTION:
+                x = event.pos[0]
+                y = event.pos[1]
+                if 17 <= x <= 474 and 116 <= y <= 177:
+                    underline.rect.y = 160
+                elif 18 <= x <= 275 and 272 <= y <= 322:
+                    underline.rect.y = 310
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound()
+                x = event.pos[0]
+                y = event.pos[1]
+                if back.check(event):
+                    back.kill()
+                    start_screen()
+                if 17 <= x <= 474 and 116 <= y <= 177:
+                    back.kill()
+                    nast_of_controlling()
+                elif 18 <= x <= 275 and 272 <= y <= 322:
+                    back.kill()
+                    nast_of_volume()
+        x, y = pygame.mouse.get_pos()
+        cursor.move(x, y)
+        all_sprites.update()
+        all_sprites.draw(screen)
+        settings_sprites.update()
+        settings_sprites.draw(screen)
+        back.place()
+        cursor_sprites.update()
+        cursor_sprites.draw(screen)
+        pygame.display.flip()
+
+
+def nast_of_controlling():
+    global MODE, number
+    pygame.display.set_caption('CONTROL SETTINGS')
+    running = True
+    back = BackButton(10, 30)
+    all_sprites = pygame.sprite.Group()
+    wasd = pygame.sprite.Sprite(all_sprites)
+    wasd.image = load_image('wasd_buttons.png')
+    wasd.rect = wasd.image.get_rect()
+    wasd.rect.x = 30
+    wasd.rect.y = 120
+    arrows_keys = pygame.sprite.Sprite(all_sprites)
+    arrows_keys.image = load_image('arrows_buttons.png')
+    arrows_keys.rect = arrows_keys.image.get_rect()
+    arrows_keys.rect.x = 30
+    arrows_keys.rect.y = 350
+    confirming_sprites = pygame.sprite.Group()
+    galka = pygame.sprite.Sprite(confirming_sprites)
+    galka.image = convert_image(load_image('galka.png'), 200, 200)
+    galka.rect = galka.image.get_rect()
+    kvadrat = pygame.sprite.Sprite(confirming_sprites)
+    kvadrat.image = convert_image(load_image('kvadrat.png'), 200, 200)
+    kvadrat.rect = kvadrat.image.get_rect()
+    if MODE == 'arrows':
+        galka.rect.x = 350
+        galka.rect.y = 350
+        kvadrat.rect.x = 350
+        kvadrat.rect.y = 120
+    else:
+        galka.rect.x = 350
+        galka.rect.y = 120
+        kvadrat.rect.x = 350
+        kvadrat.rect.y = 350
+    while running:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("comicsansms", 50)
+        settings = font.render("CONTROLLING", 1, (255, 165, 0))
+        text_x = width // 2 - settings.get_width() // 2
+        text_y = height // 2 - settings.get_height() // 2 - 250
+        screen.blit(settings, (text_x, text_y))
+        font_small = pygame.font.SysFont("comicsansms", 25)
+        instruction = font_small.render("Сhoose convenient control buttons", 1, (255, 165, 0))
+        instruction_x = 20
+        instruction_y = 85
+        screen.blit(instruction, (instruction_x, instruction_y))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    back.kill()
+                    nast()
+                elif event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    coords = galka.rect.x, galka.rect.y
+                    galka.rect.x, galka.rect.y = kvadrat.rect.x, kvadrat.rect.y
+                    kvadrat.rect.x, kvadrat.rect.y = coords
+                    if galka.rect.y == 120:
+                        MODE = 'wasd'
+                    else:
+                        MODE = 'arrows'
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound()
+                x = event.pos[0]
+                y = event.pos[1]
+                if back.check(event):
+                    back.kill()
+                    nast()
+                if 350 < x < 540 and 120 < y < 295:
+                    galka.rect.y = 120
+                    kvadrat.rect.y = 350
+                    MODE = 'wasd'
+                elif 350 < x < 540 and 350 < y < 535:
+                    galka.rect.y = 350
+                    kvadrat.rect.y = 120
+                    MODE = 'arrows'
+        all_sprites.update()
+        all_sprites.draw(screen)
+        confirming_sprites.update()
+        confirming_sprites.draw(screen)
+        back.place()
+        x, y = pygame.mouse.get_pos()
+        cursor.move(x, y)
+        pygame.display.flip()
+
+
+def nast_of_volume():
+    global MUSIC_SOUNDS, MUSIC_K, CLICK_K, CLICK_SOUNDS, GAMEPLAY_K, GAMEPLAY_SOUNDS, number
+    pygame.display.set_caption('VOLUME SETTINGS')
+    back = BackButton(20, 30)
+    running = True
+    buttons_group = pygame.sprite.Group()
+    music_sprite = pygame.sprite.Sprite(buttons_group)
+    if MUSIC_SOUNDS:
+        music_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+    else:
+        music_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+    music_sprite.rect = music_sprite.image.get_rect()
+    music_sprite.rect.x = 350
+    music_sprite.rect.y = 90
+    gameplay_sprite = pygame.sprite.Sprite(buttons_group)
+    if GAMEPLAY_SOUNDS:
+        gameplay_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+    else:
+        gameplay_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+    gameplay_sprite.rect = gameplay_sprite.image.get_rect()
+    gameplay_sprite.rect.x = 400
+    gameplay_sprite.rect.y = 240
+    click_sprite = pygame.sprite.Sprite(buttons_group)
+    if CLICK_SOUNDS:
+        click_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+    else:
+        click_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+    click_sprite.rect = click_sprite.image.get_rect()
+    click_sprite.rect.x = 350
+    click_sprite.rect.y = 390
+    while running:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("comicsansms", 50)
+        volume = font.render("VOLUME", 1, (255, 165, 0))
+        text_x = width // 2 - volume.get_width() // 2
+        text_y = height // 2 - volume.get_height() // 2 - 250
+        screen.blit(volume, (text_x, text_y))
+        font_small = pygame.font.SysFont("comicsansms", 60)
+        music_text = font_small.render("MUSIC:", 1, (255, 255, 0))
+        music_text_x = 20
+        music_text_y = 100
+        screen.blit(music_text, (music_text_x, music_text_y))
+        gameplay_text = font_small.render("GAMEPLAY:", 1, (255, 255, 0))
+        gameplay_text_x = 20
+        gameplay_text_y = 250
+        screen.blit(gameplay_text, (gameplay_text_x, gameplay_text_y))
+        click_sounds_text = font_small.render("CLICKS:", 1, (255, 255, 0))
+        click_sounds_text_x = 20
+        click_sounds_text_y = 400
+        screen.blit(click_sounds_text, (click_sounds_text_x, click_sounds_text_y))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    back.kill()
+                    nast()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                x = event.pos[0]
+                y = event.pos[1]
+                if 346 <= x <= 453 and 94 <= y <= 185:
+                    MUSIC_K += 1
+                    if MUSIC_K % 2 != 0:
+                        music_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+                        MUSIC_SOUNDS = False
+                    else:
+                        music_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+                        MUSIC_SOUNDS = True
+                elif 397 <= x <= 504 and 242 <= y <= 337:
+                    GAMEPLAY_K += 1
+                    if GAMEPLAY_K % 2 != 0:
+                        gameplay_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+                        GAMEPLAY_SOUNDS = False
+                    else:
+                        gameplay_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+                        GAMEPLAY_SOUNDS = True
+                elif 346 <= x <= 453 and 392 <= y <= 491:
+                    CLICK_K += 1
+                    if CLICK_K % 2 != 0:
+                        click_sprite.image = convert_image(load_image('vikl.png'), 100, 100)
+                        CLICK_SOUNDS = False
+                    else:
+                        click_sprite.image = convert_image(load_image('vkl.png'), 100, 100)
+                        CLICK_SOUNDS = True
+                click_sound()
+                if back.check(event):
+                    back.kill()
+                    nast()
+        buttons_group.update()
+        buttons_group.draw(screen)
+        back.place()
+        x, y = pygame.mouse.get_pos()
+        cursor.move(x, y)
+        pygame.display.flip()
