@@ -242,3 +242,12 @@ class Pacman(pygame.sprite.Sprite):
 
         self.down = [load_image('pacman_down.png'), load_image('pacman_down_a.png'),
                      load_image('pacman_down_b.png')]
+
+        self.jizn = pygame.sprite.Sprite(life)
+        self.jizn.image = convert_image(load_image('life.png', -1), 100, 100)
+        self.jizn.rect = self.jizn.image.get_rect()
+        self.jizn.rect.x = 650
+        self.jizn.rect.y = 250
+
+        self.lives = 3
+        self.i = 0
