@@ -905,3 +905,99 @@ def generator_level(level):
                 Tile('empty', x, y)
                 Cherry(x, y)
     return new_player, x, y, ghosts
+
+
+def map_clear(pacman, ghosts, food, vertical, horizontal, cherries):
+    pacman.kill()
+    for ghost in ghosts:
+        ghost.kill()
+    cherries.empty()
+    food.empty()
+    vertical.empty()
+    horizontal.empty()
+
+
+def pause(pacman, ghosts, food, vertical, horizontal, cherries):
+    global SCORE
+    pygame.display.set_caption('PAUSED')
+    paused = True
+    intro_text = ("PRESS 'ESC' TO GO TO THE MAIN MENU", "AND 'ENTER' TO CONTINUE")
+    while paused:
+        screen.fill((0, 0, 0))
+        font = pygame.font.SysFont("comicsansms", 40)
+        text_coord = 30
+        for line in intro_text:
+            string_rendared = font.render(line, 1, pygame.Color("white"))
+            intro_rect = string_rendared.get_rect()
+            text_coord += 10
+            intro_rect.top = text_coord
+            intro_rect.x = 10
+            text_coord += intro_rect.height
+            screen.blit(string_rendared, intro_rect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    SCORE = 0
+                    map_clear(pacman, ghosts, food, vertical, horizontal, cherries)
+                    start_screen()
+                elif event.key == pygame.K_RETURN:
+                    pygame.display.set_caption('PACMAN INFOMAT EDITION')
+                    screen.fill((0, 0, 0))
+                    return
+        x, y = pygame.mouse.get_pos()
+        cursor.move(x, y)
+        cursor_sprites.update()
+        cursor_sprites.draw(screen)
+        pygame.display.flip()
+
+
+def ending_lose(pacman, ghosts, food, vertical, horizontal, cherries):
+    global number, SCORE
+    pygame.display.set_caption('YOU LOSE')
+    if MUSIC_SOUNDS:
+        pygame.mixer.music.load('music/lose_music.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.05)
+    screen.fill((0, 0, 0))
+    paused = True
+    fname = open('max_score.txt', mode='r', encoding='utf-8')
+    max_score = int(fname.readline())
+    if pacman.score >= max_score:
+        text = ("YOU LOSE", "YOUR SCORE:{}".format(pacman.score),
+                "MAX SCORE:{}".format(max_score), "YOU GOT THE BEST SCORE!!!",
+                "ESC - GO TO THE MENU", "ENTER - TO RESTART")
+        write_max_score(pacman.score)
+    else:
+        text = ("YOU LOSE", "YOUR SCORE:{}".format(pacman.score),
+                "MAX SCORE:{}".format(max_score), "ESC - GO TO THE MENU", "ENTER - TO RESTART")
+    while paused:
+        text_coord = 30
+        font = pygame.font.SysFont("comicsansms", 50)
+        for line in text:
+            string_rendared = font.render(line, 1, pygame.Color("white"))
+            intro_rect = string_rendared.get_rect()
+            text_coord += 10
+            intro_rect.top = text_coord
+            intro_rect.x = 10
+            text_coord += intro_rect.height
+            screen.blit(string_rendared, intro_rect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.mixer.music.stop()
+                    for ghost in ghosts:
+                        ghost.kill()
+                    map_clear(pacman, ghosts, food, vertical, horizontal, cherries)
+                    start_screen()
+                elif event.key == pygame.K_RETURN:
+                    map_clear(pacman, ghosts, food, vertical, horizontal, cherries)
+                    number = 1
+                    SCORE = 0
+                    pygame.mixer.music.stop()
+                    main()
+                    return
+        pygame.display.flip()
