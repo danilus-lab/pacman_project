@@ -334,20 +334,20 @@ class Pacman(pygame.sprite.Sprite):
         return self.score_for_level == 20 * self.k_food + \
                100 * self.k_cherries - 300 * self.k_ghosts
 
-        def otrisovka(self):
-            font = pygame.font.SysFont("comicsansms", 30)
-            screen.fill((0, 0, 0))
-            score = font.render('SCORE: ' + str(self.score), 1,
-                                (255, 165, 0))
-            screen.blit(score, (600, 10))
-            font = pygame.font.SysFont("comicsansms", 60)
-            lives = font.render('x ' + str(self.lives), 1,
-                                (255, 165, 0))
-            screen.blit(lives, (750, 260))
+    def otrisovka(self):
+        font = pygame.font.SysFont("comicsansms", 30)
+        screen.fill((0, 0, 0))
+        score = font.render('SCORE: ' + str(self.score), 1,
+                            (255, 165, 0))
+        screen.blit(score, (600, 10))
+        font = pygame.font.SysFont("comicsansms", 60)
+        lives = font.render('x ' + str(self.lives), 1,
+                            (255, 165, 0))
+        screen.blit(lives, (750, 260))
 
-        def end_of_game(self):
-            if self.lives == 0:
-                return True
+    def end_of_game(self):
+        if self.lives == 0:
+            return True
 
 
 class Bots_a(pygame.sprite.Sprite):
