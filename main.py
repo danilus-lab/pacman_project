@@ -50,3 +50,105 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def write_max_score(score):
+    fname = open('max_score.txt', mode='w', encoding='utf-8')
+    fname.write(str(score))
+
+
+def convert_image(image, x, y):
+    image1 = pygame.transform.scale(image, (x, y))
+    return image1
+
+
+tile_images = {'1': load_image('1.png'), '2': load_image('2.png'), '3': load_image('3.png'),
+               '4': load_image('4.png'), '5': load_image('5.png'),
+               '6': load_image('6.png'), '7': load_image('7.png'), '8': load_image('8.png'),
+               '9': load_image('9.png'), '0': load_image('0.png'),
+               'dot': load_image('dot.png'), 'empty': load_image('empty.png'),
+               'pacman': load_image('pacman_right.png'), 'a': load_image('a.png'),
+               'b': load_image('b.png'),
+               'c': load_image('c.png'), 'v': convert_image(load_image('cherry.png'), 30, 30)}
+tile_width = tile_height = 30
+
+
+class Tile(pygame.sprite.Sprite):
+    def __init__(self, tile_type, pos_x, pos_y):
+        super().__init__(tile_group)
+        self.image = tile_images[tile_type]
+        self.rect = self.image.get_rect().move(tile_width * pos_x, tile_height * pos_y)
+        if tile_type != 'dot':
+            tile_group.add(self)
+
+
+class Food(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__(food)
+        self.image = tile_images['dot']
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(tile_width * pos_x, tile_height * pos_y)
+        self.x = pos_x
+        self.y = pos_y
+        self.radius = 5
+
+    def update(self, pacman):
+        if pygame.sprite.collide_circle(self, pacman):
+            self.kill()
+            pacman.score += 20
+            pacman.score_for_level += 20
+            new_sprite = pygame.sprite.Sprite(food)
+            new_sprite.image = tile_images['empty']
+            new_sprite.rect = new_sprite.image.get_rect()
+            new_sprite.rect = new_sprite.rect.move(tile_width * self.x, tile_height * self.y)
+            if GAMEPLAY_SOUNDS:
+                sounds['eat'].set_volume(0.02)
+                sounds['eat'].play(0)
+
+
+class Cursor(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(cursor_sprites)
+        self.image = convert_image(load_image('pakman_cursor.png', -1), 20, 20)
+        self.rect = self.image.get_rect()
+        pygame.mouse.set_visible(0)
+
+    def move(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+        cursor_sprites.update()
+        cursor_sprites.draw(screen)
+
+
+class BackButton(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(back_sprites)
+        self.image = convert_image(load_image('back_button.png', -1), 100, 50)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def check(self, event):
+        x, y = event.pos[0], event.pos[1]
+        return self.rect.x <= x <= self.rect.x + 100 and self.rect.y <= y <= self.rect.y + 50
+
+    def place(self):
+        back_sprites.update()
+        back_sprites.draw(screen)
+
+
+class PauseButton(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(back_sprites)
+        self.image = load_image('pause_button.png', -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def check(self, event):
+        x, y = event.pos[0], event.pos[1]
+        return self.rect.x <= x <= self.rect.x + 60 and self.rect.y <= y <= self.rect.y + 60
+
+    def place(self):
+        pause_sprites.update()
+        pause_sprites.draw(screen)
