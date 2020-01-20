@@ -1053,3 +1053,19 @@ def ending_win(pacman, ghosts, food, vertical, horizontal, cherries):
 
 def change_level():
     main()
+
+
+def main():
+    global number, SCORE
+    if MUSIC_SOUNDS:
+        pygame.mixer.music.load('music/bg_music.mp3')
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.05)
+    pygame.display.set_caption('PACMAN INFOMAT EDITION')
+    size = width, height = 900, 600
+    screen = pygame.display.set_mode(size)
+    FPS = 60
+    back = BackButton(620, 520)
+    pause_button = PauseButton(750, 520)
+    clock = pygame.time.Clock()
+    running = True
