@@ -17,7 +17,7 @@ sounds = {'click': pygame.mixer.Sound('sounds/ckick.wav'),
 MUSIC_K = 0
 GAMEPLAY_K = 0
 CLICK_K = 0
-number = 1
+number = 8
 SCORE = 0
 
 MUSIC_SOUNDS = True
@@ -351,100 +351,250 @@ class Pacman(pygame.sprite.Sprite):
 
 
 class Bots_a(pygame.sprite.Sprite):
-    def __init__(self, x, y, bucva, number):
+    def __init__(self, x, y, bucva, numbers):
         super().__init__(bots, all_sprites)
         self.image = convert_image(load_image(bucva + '.png'), 30, 30)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.x = x
+        self.y = y
         self.spid_x = 1
         self.spid_y = 1
-        self.number = number
+        self.nomer = 0
+        self.numbers = numbers
         self.radius = 10
         self.r_l = True
         self.u_d = True
+        self.dvij = []
         self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
 
+        if self.numbers == 3 or self.numbers == 4:
+            for i in range(x, x + 60):
+                self.dvij.append((i, y))
+            x = x + 60
+            for j in range(y, y + 150):
+                self.dvij.append((x, j))
+            y = y + 150
+            for i in range(x, x + 120):
+                self.dvij.append((i, y))
+            x = x + 120
+            for j in range(y, y + 60):
+                self.dvij.append((x, j))
+            y += 60
+            for i in range(x, x - 240, -1):
+                self.dvij.append((i, y))
+            x = x - 240
+            for j in range(y, y - 210, -1):
+                self.dvij.append((x, j))
+            y = y - 210
+            for i in range(x, x + 60):
+                self.dvij.append((i, y))
+            x += 60
+
     def update(self):
-        level = load_level('level' + str(self.number) + '.txt')
-        if self.r_l:
-            self.rect.x += self.spid_x
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_x *= (-1)
+        if self.numbers in [3, 4]:
+            self.rect.x = self.dvij[self.nomer % len(self.dvij)][0]
+            self.rect.y = self.dvij[self.nomer % len(self.dvij)][1]
+            self.nomer += 1
+        else:
+            if self.r_l:
                 self.rect.x += self.spid_x
-                self.r_l = False
-                self.u_d = True
-        if self.u_d:
-            self.rect.y += self.spid_y
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_y *= (-1)
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
                 self.rect.y += self.spid_y
-                self.u_d = False
-                self.r_l = True
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
 
 
 class Bots_b(pygame.sprite.Sprite):
-    def __init__(self, x, y, bucva, number):
+    def __init__(self, x, y, bucva, numbers):
         super().__init__(bots, all_sprites)
         self.image = convert_image(load_image(bucva + '.png'), 30, 30)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.x = x
+        self.y = y
         self.spid_x = 1
         self.spid_y = 1
-        self.number = number
+        self.nomer = 0
+        self.numbers = numbers
+        self.radius = 10
         self.r_l = True
         self.u_d = True
+        self.dvij = []
         self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
 
+        if self.numbers == 2:
+            for i in range(x, x - 150, -1):
+                self.dvij.append((i, y))
+            x = x - 150
+            for j in range(y, y + 120):
+                self.dvij.append((x, j))
+            y = y + 120
+            for i in range(x, x + 240):
+                self.dvij.append((i, y))
+            x = x + 240
+            self.dvij += self.dvij[::-1]
+        elif self.numbers == 3 or self.numbers == 4:
+            for j in range(y, y - 360, -1):
+                self.dvij.append((x, j))
+            y = y - 360
+            for i in range(x, x - 180, -1):
+                self.dvij.append((i, y))
+            x = x - 180
+            for j in range(y, y + 150):
+                self.dvij.append((x, j))
+            y = y + 150
+            for i in range(x, x - 90, -1):
+                self.dvij.append((i, y))
+            x = x - 90
+            for j in range(y, y + 210):
+                self.dvij.append((x, j))
+            y = y + 210
+            for i in range(x, x + 270):
+                self.dvij.append((i, y))
+
     def update(self):
-        level = load_level('level' + str(self.number) + '.txt')
-        if self.r_l:
-            self.rect.x += self.spid_x
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_x *= (-1)
+        if self.numbers in [2, 3, 4]:
+            self.rect.x = self.dvij[self.nomer % len(self.dvij)][0]
+            self.rect.y = self.dvij[self.nomer % len(self.dvij)][1]
+            self.nomer += 1
+        else:
+            if self.r_l:
                 self.rect.x += self.spid_x
-                self.r_l = False
-                self.u_d = True
-        if self.u_d:
-            self.rect.y += self.spid_y
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_y *= (-1)
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
                 self.rect.y += self.spid_y
-                self.u_d = False
-                self.r_l = True
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
 
 
 class Bots_c(pygame.sprite.Sprite):
-    def __init__(self, x, y, bucva, number):
+    def __init__(self, x, y, bucva, numbers):
         super().__init__(bots, all_sprites)
         self.image = convert_image(load_image(bucva + '.png'), 30, 30)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.x = x
+        self.y = y
         self.spid_x = 1
         self.spid_y = 1
-        self.number = number
+        self.nomer = 0
+        self.numbers = numbers
+        self.radius = 10
         self.r_l = True
         self.u_d = True
+        self.dvij = []
         self.moveUp = self.moveLeft = self.moveDown = self.moveRight = True
 
+        if self.numbers == 5 or self.numbers == 6:
+            for j in range(y, y + 180):
+                self.dvij.append((x, j))
+            y = y + 180
+            for i in range(x, x + 240):
+                self.dvij.append((i, y))
+            x = x + 240
+            for j in range(y, y - 180, -1):
+                self.dvij.append((x, j))
+            y = y - 180
+            for i in range(x, x + 150):
+                self.dvij.append((i, y))
+            x = x + 150
+            for j in range(y, y + 180):
+                self.dvij.append((x, j))
+            y = y + 180
+            for i in range(x, x - 150, -1):
+                self.dvij.append((i, y))
+            x = x - 150
+            for j in range(y, y - 180, -1):
+                self.dvij.append((x, j))
+            y = y - 180
+            for i in range(x, x - 240, -1):
+                self.dvij.append((i, y))
+            x = x - 240
+        elif self.numbers == 7 or self.numbers == 8:
+            for i in range(x, x - 150, -1):
+                self.dvij.append((i, y))
+            x = x - 150
+            for j in range(y, y + 180):
+                self.dvij.append((x, j))
+            y = y + 180
+            for i in range(x, x + 360):
+                self.dvij.append((i, y))
+            x = x + 360
+            for j in range(y, y - 510, -1):
+                self.dvij.append((x, j))
+            y = y - 510
+            for i in range(x, x - 210, -1):
+                self.dvij.append((i, y))
+            x = x - 210
+            for j in range(y, y + 330):
+                self.dvij.append((x, j))
+        elif self.numbers == 4:
+            for i in range(x, x + 270):
+                self.dvij.append((i, y))
+            x = x + 270
+            for j in range(y, y - 60, -1):
+                self.dvij.append((x, j))
+            y = y - 60
+            for i in range(x, x + 180):
+                self.dvij.append((i, y))
+            x = x + 180
+            for j in range(y, y - 120, -1):
+                self.dvij.append((x, j))
+            y = y - 120
+            for i in range(x, x - 510, -1):
+                self.dvij.append((i, y))
+            x = x - 510
+            for j in range(y, y + 210):
+                self.dvij.append((x, j))
+            y = y + 210
+            for i in range(x, x + 30):
+                self.dvij.append((i, y))
+            x = x + 30
+            for j in range(y, y - 30, -1):
+                self.dvij.append((x, j))
+            y = y - 30
+            for i in range(x, x + 30):
+                self.dvij.append((i, y))
+
     def update(self):
-        level = load_level('level' + str(self.number) + '.txt')
-        if self.r_l:
-            self.rect.x += self.spid_x
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_x *= (-1)
+        if self.numbers in [4, 5, 6, 7, 8]:
+            self.rect.x = self.dvij[self.nomer % len(self.dvij)][0]
+            self.rect.y = self.dvij[self.nomer % len(self.dvij)][1]
+            self.nomer += 1
+        else:
+            if self.r_l:
                 self.rect.x += self.spid_x
-                self.r_l = False
-                self.u_d = True
-        if self.u_d:
-            self.rect.y += self.spid_y
-            if pygame.sprite.spritecollideany(self, vertical_borders):
-                self.spid_y *= (-1)
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_x *= (-1)
+                    self.rect.x += self.spid_x
+                    self.r_l = False
+                    self.u_d = True
+            if self.u_d:
                 self.rect.y += self.spid_y
-                self.u_d = False
-                self.r_l = True
+                if pygame.sprite.spritecollideany(self, vertical_borders):
+                    self.spid_y *= (-1)
+                    self.rect.y += self.spid_y
+                    self.u_d = False
+                    self.r_l = True
 
 
 def terminate():
@@ -1134,5 +1284,6 @@ def main():
         cursor.move(x, y)
         pygame.display.flip()
         clock.tick(FPS)
+
 
 start_screen()
