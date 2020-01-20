@@ -1077,3 +1077,34 @@ def main():
     tile_group.draw(screen)
     food.update(pacman)
     food.draw(screen)
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                terminate()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pause(pacman, ghosts, food, vertical_borders, horizontal_borders, cherries)
+                else:
+                    pacman.move(event)
+                    pacman.update()
+            elif event.type == pygame.KEYUP:
+                pacman.moveRight = pacman.moveLeft = pacman.moveUp = pacman.moveDown = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound()
+                if back.check(event):
+                    map_clear(pacman, ghosts, food, vertical_borders,
+                              horizontal_borders, cherries)
+                    start_screen()
+                if pause_button.check(event):
+                    pause(pacman, ghosts, food, vertical_borders, horizontal_borders, cherries)
+            if pacman.if_max_score():
+                number += 1
+                if number == 9:
+                    ending_win(pacman, ghosts, food, vertical_borders, horizontal_borders, cherries)
+                SCORE = pacman.score
+                map_clear(pacman, ghosts, food, vertical_borders,
+                          horizontal_borders, cherries)
+                bots.empty()
+                screen.fill((0, 0, 0))
+                change_level()
